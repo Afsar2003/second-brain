@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { AnimatePresence } from "framer-motion";
 import ItemCard from "@/components/ItemCard";
 import AddItemModal from "@/components/AddItemModal";
@@ -23,19 +23,18 @@ export default function Dashboard() {
   const [type, setType] = useState("");
   const [loading, setLoading] = useState(true);
 
-  async function fetchItems() {
-    setLoading(true);
+  const fetchItems = useCallback(async () => {
     const params = new URLSearchParams();
     if (search) params.set("search", search);
     if (type) params.set("type", type);
     const res = await fetch(`/api/items?${params}`);
     setItems(await res.json());
     setLoading(false);
-  }
+  }, [search, type]);
 
   useEffect(() => {
     fetchItems();
-  }, [search, type]);
+  }, [fetchItems]);
 
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100">
@@ -123,7 +122,7 @@ export default function Dashboard() {
             <Brain size={48} className="mx-auto mb-4 text-zinc-700" />
             <p className="text-lg">Your brain is empty. Start capturing!</p>
             <p className="text-sm mt-2">
-              Click "Capture Idea" to add your first note.
+              Click Capture Idea to add your first note.
             </p>
           </div>
         ) : (
