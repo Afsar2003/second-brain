@@ -13,7 +13,10 @@ export async function POST(req: NextRequest) {
   });
 
   const context = items
-    .map((i) => `[${i.type.toUpperCase()}] ${i.title}\n${i.content}`)
+    .map(
+      (i: { type: string; title: string; content: string }) =>
+        `[${i.type.toUpperCase()}] ${i.title}\n${i.content}`,
+    )
     .join("\n\n---\n\n");
 
   const message = await client.messages.create({
